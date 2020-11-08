@@ -1,17 +1,20 @@
 ﻿using System;
+using System.Linq;
 using Telegram.Bot;
 using Telegram.Bot.Args;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Awesome {
   class Program {
     static ITelegramBotClient botClient;
 
     static void Main() {
+        //Cambiar el token del bot aqui
       botClient = new TelegramBotClient("1073045363:AAGj36rMsGOP_DfyxMUC-ihNeEjCaA_ra3M");
 
       var me = botClient.GetMeAsync().Result;
       Console.WriteLine(
-        $"Hola Mundo! Soy el usuario {me.Id} y me llamo {me.FirstName}."
+        $"Hola! Me llamo {me.FirstName}."
       );
 
       botClient.OnMessage += Bot_OnMessage;
@@ -26,81 +29,32 @@ namespace Awesome {
     static async void Bot_OnMessage(object sender, MessageEventArgs e) {
       if (e.Message.Text != null)
       {
-        Console.WriteLine($"Received a text message in chat {e.Message.Chat.Id}.");
+        //Console.WriteLine($"Received a text message in chat {e.Message.Chat.Id}.");
+        Console.WriteLine($"Received a text message from @{e.Message.Chat.Username}:" + e.Message.Text);
 
-        if (e.Message.Text == "Hola!" || e.Message.Text == "Hola" || e.Message.Text == "Hey"){
+        if (e.Message.Text == "/start"){
 
-            //General Response
-            await botClient.SendTextMessageAsync(
-                chatId: e.Message.Chat,
-                text:   "Hasta Pronto!"
-            );
+            var BotonesHYD = new InlineKeyboardMarkup(new[]{
+                new []{
+                    InlineKeyboardButton.WithCallbackData(
+                      text:"Sintomas",
+                      callbackData: " "),
+                    InlineKeyboardButton.WithCallbackData(
+                        text:"Prevencion",
+                        callbackData: " "),
+                    InlineKeyboardButton.WithCallbackData(
+                        text:"Tratamiento",
+                        callbackData: " ")
+                },
+                new []{
+                    InlineKeyboardButton.WithUrl(
+                        text:"Ver estadisticas",
+                        url: "https://www.google.com/search?q=coronavirus+statistics&oq=coronavirus+st&aqs=chrome.0.0i67j69i57j0l6.6211j0j4&sourceid=chrome&ie=UTF-8")
+                }
+            });
 
-        }
-
-        if (e.Message.Text == "Adios!" || e.Message.Text == "Adios"){
-
-            //General Response
-            await botClient.SendTextMessageAsync(
-                chatId: e.Message.Chat,
-                text:   "Hasta Pronto!"
-            );
-
-        }
-
-        if (e.Message.Text == "Muestrame una imagen"){
-
-            //Send a sticker
-            await botClient.SendPhotoAsync(
-                chatId:  e.Message.Chat,
-                photo: "https://github.com/TelegramBots/book/raw/master/src/docs/photo-ara.jpg",
-                caption: "<b>Ara bird</b>. <i>Source</i>: <a href=\"https://pixabay.com\">Pixabay</a>"
-            );
-
-        }
-
-        if (e.Message.Text == "Muestrame un sticker"){
-
-            //Send a sticker
-            await botClient.SendStickerAsync(
-                chatId:  e.Message.Chat,
-                sticker: "https://github.com/TelegramBots/book/raw/master/src/docs/sticker-dali.webp"
-            );
-
-        }
-
-        if (e.Message.Text == "Cool Giraffe"){
-
-            //Send a sticker
-            await botClient.SendStickerAsync(
-                chatId:  e.Message.Chat,
-                sticker: "https://github.com/TelegramBots/book/raw/master/src/docs/sticker-fred.webp"
-            );
-
-        }
-
-        if (e.Message.Text == "Muestrame un video"){
-
-            //Send a video
-            await botClient.SendVideoAsync(
-                chatId:  e.Message.Chat,
-                video: "https://github.com/TelegramBots/book/raw/master/src/docs/video-bulb.mp4"
-            );
-
-        }
-
-        if (e.Message.Text == "Muestrame un audio"){ 
-
-            await botClient.SendAudioAsync(
-                e.Message.Chat,
-                "https://github.com/TelegramBots/book/raw/master/src/docs/audio-guitar.mp3"
-                /* ,
-                performer: "Joel Thomas Hunger",
-                title: "Fun Guitar and Ukulele",
-                duration: 91 // in seconds
-                */
-            );
-
+            await botClient.SendTextMessageAsync(e.Message.Chat.Id,"Bienvenid@ al BOT COVID19HN \n Selecciona el comando a ejecutar",replyMarkup: BotonesHYD);
+        
         }
 
       }

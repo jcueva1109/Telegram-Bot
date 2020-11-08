@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "nSlLLP/ZpA8uitERk7Z9mY+Olqmyb0pAzRtb95UK2uoViHgLU2nXyj+EeZzjqZ/KIzK9Oq13zazr/G9428TnUA==",
+  "dgSpecHash": "aw9JNzhAiE0NXB2ZWD7vW7LMG6SrfZV5O7Q0lvVTWjEYMNoOQEU0oRiU6g8V9cMuRWNLJrEd36ZmY50WRtTK/w==",
   "success": true,
-  "projectFilePath": "/home/jcueva/Local_Documentos/Bot/Bot.csproj",
+  "projectFilePath": "/home/jcueva/Local_Documentos/Telegram-Bot/Bot/Bot.csproj",
   "expectedPackageFiles": [
     "/home/jcueva/.nuget/packages/microsoft.netcore.platforms/1.1.0/microsoft.netcore.platforms.1.1.0.nupkg.sha512",
     "/home/jcueva/.nuget/packages/microsoft.netcore.targets/1.1.0/microsoft.netcore.targets.1.1.0.nupkg.sha512",

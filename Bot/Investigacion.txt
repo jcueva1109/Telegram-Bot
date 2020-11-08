@@ -1,0 +1,5 @@
+1. Inline Methods
+2. Reply Keyboard Markup 
+    https://irazasyed.github.io/telegram-bot-sdk/usage/keyboards/
+3. Inline Keyboards
+4. Callback buttons
