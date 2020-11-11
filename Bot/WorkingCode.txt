@@ -2,6 +2,7 @@ using System;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 
+//Programa del bot con comandos predeterminados
 namespace Awesome {
   class Program {
     static ITelegramBotClient botClient;
@@ -108,31 +109,8 @@ namespace Awesome {
   }
 }
 
-////////////////////////////////////////////////
-  public async void MyRobat()  
-        {  
-  TelegramBotClient bot = new TelegramBotClient("Your Bot Token");  
-            var rkm = new ReplyKeyboardMarkup();  
-          rkm.Keyboard =  
-       new KeyboardButton[][]  
-       {  
-        new KeyboardButton[]  
-        {  
-            new KeyboardButton("item"),  
-            new KeyboardButton("item")  
-        },  
-          new KeyboardButton[]  
-        {  
-            new KeyboardButton("item")  
-        }  
-       };  
-  await bot.SendTextMessageAsync(lastIp.Message.Chat.Id, "Text", false, false, 0, rkm);  
-  
-}
-
-////////////////////////////////////////////////
+//Codigo para mostrar los Inline Keyboard Buttons
 if (e.Message.Text == "/start"){
-
             var BotonesHYD = new InlineKeyboardMarkup(new[] {
                 new [] {
                     InlineKeyboardButton.WithCallbackData(
@@ -144,3 +122,27 @@ if (e.Message.Text == "/start"){
             botClient.SendTextMessageAsync(e.Message.Chat.Id,"Que pasa puta, queres que te la ponga?",replyMarkup: BotonesHYD);
 
         }
+
+//Codigo de BotOnCallbackQueryRecieved
+    static async Task BotOnCallbackQueryRecieved(object sender, CallbackQueryEventArgs callbackQueryEventArgs){
+
+      var callbackQuery = callbackQueryEventArgs.CallbackQuery;
+
+        //Este es el popup que le muestra al usuario
+        await botClient.AnswerCallbackQueryAsync(
+          callbackQueryId: callbackQuery.Id,
+          text: $"Received {callbackQuery.Data}"
+        );
+        
+        Console.WriteLine($"Selecciono: {callbackQuery.Data}");
+
+
+        //Si descomento esto, el bot envia un mensaje con Received callbackQuery.Data
+        await botClient.SendTextMessageAsync(
+          chatId: callbackQuery.Message.Chat.Id,
+          text: $"Received {callbackQuery.Data}"
+        );
+
+    }
+
+//    

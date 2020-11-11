@@ -4,21 +4,20 @@ using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.InlineQueryResults;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Awesome {
   class Program {
     static ITelegramBotClient botClient;
-
+    //\n
     static void Main() {
-      //Cambiar el token del bot aqui
+      
       botClient = new TelegramBotClient("1073045363:AAGj36rMsGOP_DfyxMUC-ihNeEjCaA_ra3M");
 
       var me = botClient.GetMeAsync().Result;
       Console.Title = me.Username;
       Console.WriteLine(
-        $"Hola! Me llamo {me.FirstName}."
+        $"botClient>> Hola! Me llamo {me.FirstName}."
       );
 
       botClient.OnMessage += Bot_OnMessage;
@@ -31,31 +30,106 @@ namespace Awesome {
 
       botClient.StopReceiving();
     }
-
-    static async void BotOnReceiveError(object sender, ReceiveErrorEventArgs e){
-      Console.WriteLine(e.ApiRequestException.Message);
+    static void BotOnReceiveError(object sender, ReceiveErrorEventArgs e){
+      Console.WriteLine($"botClient>> Error recibido: "+e.ApiRequestException.Message);
     }
-    static async void BotOnCallbackQueryRecieved(object sender, CallbackQueryEventArgs callbackQueryEventArgs){
+    public static async void BotOnCallbackQueryRecieved(object sender, CallbackQueryEventArgs callbackQueryEventArgs){
 
       var callbackQuery = callbackQueryEventArgs.CallbackQuery;
 
-        await botClient.AnswerCallbackQueryAsync(
-          callbackQueryId: callbackQuery.Id,
-          text: $"Received {callbackQuery.Data}"
-        );
-        Console.WriteLine($"Received {callbackQuery.Data}");
+        Console.WriteLine($"botCliente>> El usuario selecciono {callbackQuery.Data}");
 
-        //Si descomento esto, el bot envia un mensaje con Received callbackQuery.Data
-        // await botClient.SendTextMessageAsync(
-        //   chatId: callbackQuery.Message.Chat.Id,
-        //   text: $"Received {callbackQuery.Data}"
-        // );
+        if(callbackQuery.Data == "Circulacion"){
 
+          await DiaCirculacionAsync(callbackQuery);
+
+        }else if(callbackQuery.Data == "AutoEvaluate"){
+
+          CuestionarioSintomas(callbackQuery);
+
+        }else if(callbackQuery.Data == "/help"){
+
+        }
+        else{
+
+          await botClient.AnswerCallbackQueryAsync(
+            callbackQueryId: callbackQuery.Id,
+            text: $"..."
+          );
+
+        }
+
+    }
+    static async Task DiaCirculacionAsync(CallbackQuery callbackQuery){
+
+      await botClient.SendTextMessageAsync(
+        chatId:callbackQuery.Message.Chat.Id,
+        text:"¡¡¡Aqui va la informacion de los dias de circulación!!!"
+      );
+
+    }
+    static async void CuestionarioSintomas(CallbackQuery callbackQuery){
+
+      var rkm = new ReplyKeyboardMarkup();
+
+      rkm.Keyboard = new KeyboardButton[][]{
+        new KeyboardButton[]{
+          new KeyboardButton("Sí"),
+          new KeyboardButton("No")
+        }
+      };
+
+      await botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, "Tienes fiebre?", replyMarkup: rkm);
+      await SegundaPregunta(callbackQuery);
+
+    }
+    static async Task SegundaPregunta(CallbackQuery callbackQuery){
+
+      var rkm = new ReplyKeyboardMarkup();
+
+      rkm.Keyboard = new KeyboardButton[][]{
+        new KeyboardButton[]{
+          new KeyboardButton("Sí"),
+          new KeyboardButton("No")
+        }
+      };
+
+      await botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, "Tienes tos seca?", replyMarkup: rkm);
+      await TerceraPregunta(callbackQuery);
+    }
+    static async Task TerceraPregunta(CallbackQuery callbackQuery){
+
+      var rkm = new ReplyKeyboardMarkup();
+
+      rkm.Keyboard = new KeyboardButton[][]{
+        new KeyboardButton[]{
+          new KeyboardButton("Sí"),
+          new KeyboardButton("No")
+        }
+      };
+
+      await botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, "Tienes cansancio?", replyMarkup: rkm);
+      await CuartaPregunta(callbackQuery);
+
+    }
+    static async Task CuartaPregunta(CallbackQuery callbackQuery){
+
+      var rkm = new ReplyKeyboardMarkup();
+
+      rkm.Keyboard = new KeyboardButton[][]{
+        new KeyboardButton[]{
+          new KeyboardButton("Sí"),
+          new KeyboardButton("No")
+        }
+      };
+
+      await botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, "Tienes dolores y/o molestias?", replyMarkup: rkm);
+      
     }
     static async void Bot_OnMessage(object sender, MessageEventArgs e) {
       if (e.Message.Text != null){
-        //Console.WriteLine($"Received a text message in chat {e.Message.Chat.Id}.");
-        Console.WriteLine($"Received a text message from @{e.Message.Chat.Username}:" + e.Message.Text);
+        
+        Console.WriteLine($"botClient>> Received a text message from @{e.Message.Chat.Username}:" + e.Message.Text);
 
         if (e.Message.Text == "/start"){
 
@@ -63,7 +137,7 @@ namespace Awesome {
               new []{   //Fila nueva
                 InlineKeyboardButton.WithCallbackData(    //Columna nueva
                   text:"Días de Circulación",
-                  callbackData: "circulacion"),
+                  callbackData: "Circulacion"),
                   InlineKeyboardButton.WithCallbackData(    //Columna nueva
                     text:"Auto Evaluate",
                     callbackData: "AutoEvaluate")
@@ -75,6 +149,11 @@ namespace Awesome {
                 InlineKeyboardButton.WithUrl(
                   text:"Como prevenir?",
                   url:"https://www.who.int/es/emergencies/diseases/novel-coronavirus-2019/advice-for-public")
+              },
+              new[]{
+                InlineKeyboardButton.WithCallbackData(
+                  text:"Help",
+                  callbackData:"/help")
               }
           });
 
@@ -93,8 +172,6 @@ namespace Awesome {
                   "/recomendaciones - muestra una serie de recomendaciones para prevenir el COVID 19\n"
           );
         }
-
-        //Siguiente pedazo de codigo
 
       }
     }
