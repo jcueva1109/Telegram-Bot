@@ -9,7 +9,7 @@ namespace Awesome {
     static ITelegramBotClient botClient;
 
     static void Main() {
-        //Cambiar el token del bot aqui
+      //Cambiar el token del bot aqui
       botClient = new TelegramBotClient("1073045363:AAGj36rMsGOP_DfyxMUC-ihNeEjCaA_ra3M");
 
       var me = botClient.GetMeAsync().Result;
@@ -34,29 +34,40 @@ namespace Awesome {
 
         if (e.Message.Text == "/start"){
 
-            var BotonesHYD = new InlineKeyboardMarkup(new[]{
-                new []{
-                    InlineKeyboardButton.WithCallbackData(
-                      text:"Sintomas",
-                      callbackData: " "),
-                    InlineKeyboardButton.WithCallbackData(
-                        text:"Prevencion",
-                        callbackData: " "),
-                    InlineKeyboardButton.WithCallbackData(
-                        text:"Tratamiento",
-                        callbackData: " ")
-                },
-                new []{
-                    InlineKeyboardButton.WithUrl(
-                        text:"Ver estadisticas",
-                        url: "https://www.google.com/search?q=coronavirus+statistics&oq=coronavirus+st&aqs=chrome.0.0i67j69i57j0l6.6211j0j4&sourceid=chrome&ie=UTF-8")
-                }
-            });
+          var BotonesHYD = new InlineKeyboardMarkup(new[]{
+              new []{   //Fila nueva
+                InlineKeyboardButton.WithCallbackData(    //Columna nueva
+                  text:"Días de Circulación",
+                  callbackData: "circulacion"),
+                  InlineKeyboardButton.WithCallbackData(    //Columna nueva
+                    text:"Auto Evaluate",
+                    callbackData: "AutoEvaluate")
+              },
+              new []{   //Fila nueva
+                InlineKeyboardButton.WithUrl(             //Columna nueva
+                  text:"Estadísticas",
+                  url: "https://www.google.com/search?q=coronavirus+statistics&oq=coronavirus+st&aqs=chrome.0.0i67j69i57j0l6.6211j0j4&sourceid=chrome&ie=UTF-8"),
+                InlineKeyboardButton.WithUrl(
+                  text:"Como prevenir?",
+                  url:"https://www.who.int/es/emergencies/diseases/novel-coronavirus-2019/advice-for-public")
+              }
+          });
 
             await botClient.SendTextMessageAsync(e.Message.Chat.Id,"Bienvenid@ al BOT COVID19HN \n Selecciona el comando a ejecutar",replyMarkup: BotonesHYD);
-        
         }
 
+        if(e.Message.Text == "/usage" || e.Message.Text == "/help" || e.Message.Text == "/"){
+
+          await botClient.SendTextMessageAsync(
+            chatId: e.Message.Chat,
+            text: "Comandos:\n" + 
+                  "/start - ejecuta los comandos COVID 19\n"+
+                  "/circulacion - muestra los dias de circulación\n"+
+                  "/stats - muestra las estadisticas de COVID 19\n"+
+                  "/evaluate - muestra una serie de preguntas sobre los sintomas que padeces\n"+
+                  "/recomendaciones - muestra una serie de recomendaciones para prevenir el COVID 19\n"
+          );
+        }
       }
     }
   }
