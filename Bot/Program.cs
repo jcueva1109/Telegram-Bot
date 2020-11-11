@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Args;
+using Telegram.Bot.Types;
+using Telegram.Bot.Types.InlineQueryResults;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Awesome {
@@ -13,11 +16,14 @@ namespace Awesome {
       botClient = new TelegramBotClient("1073045363:AAGj36rMsGOP_DfyxMUC-ihNeEjCaA_ra3M");
 
       var me = botClient.GetMeAsync().Result;
+      Console.Title = me.Username;
       Console.WriteLine(
         $"Hola! Me llamo {me.FirstName}."
       );
 
       botClient.OnMessage += Bot_OnMessage;
+      botClient.OnCallbackQuery += BotOnCallbackQueryRecieved;
+      botClient.OnReceiveError += BotOnReceiveError;
       botClient.StartReceiving();
 
       Console.WriteLine("Press any key to exit");
@@ -26,9 +32,28 @@ namespace Awesome {
       botClient.StopReceiving();
     }
 
+    static async void BotOnReceiveError(object sender, ReceiveErrorEventArgs e){
+      Console.WriteLine(e.ApiRequestException.Message);
+    }
+    static async void BotOnCallbackQueryRecieved(object sender, CallbackQueryEventArgs callbackQueryEventArgs){
+
+      var callbackQuery = callbackQueryEventArgs.CallbackQuery;
+
+        await botClient.AnswerCallbackQueryAsync(
+          callbackQueryId: callbackQuery.Id,
+          text: $"Received {callbackQuery.Data}"
+        );
+        Console.WriteLine($"Received {callbackQuery.Data}");
+
+        //Si descomento esto, el bot envia un mensaje con Received callbackQuery.Data
+        // await botClient.SendTextMessageAsync(
+        //   chatId: callbackQuery.Message.Chat.Id,
+        //   text: $"Received {callbackQuery.Data}"
+        // );
+
+    }
     static async void Bot_OnMessage(object sender, MessageEventArgs e) {
-      if (e.Message.Text != null)
-      {
+      if (e.Message.Text != null){
         //Console.WriteLine($"Received a text message in chat {e.Message.Chat.Id}.");
         Console.WriteLine($"Received a text message from @{e.Message.Chat.Username}:" + e.Message.Text);
 
@@ -68,7 +93,11 @@ namespace Awesome {
                   "/recomendaciones - muestra una serie de recomendaciones para prevenir el COVID 19\n"
           );
         }
+
+        //Siguiente pedazo de codigo
+
       }
     }
+  
   }
 }
