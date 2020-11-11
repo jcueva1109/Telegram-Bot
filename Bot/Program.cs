@@ -33,6 +33,7 @@ namespace Awesome {
     static void BotOnReceiveError(object sender, ReceiveErrorEventArgs e){
       Console.WriteLine($"botClient>> Error recibido: "+e.ApiRequestException.Message);
     }
+    
     public static async void BotOnCallbackQueryRecieved(object sender, CallbackQueryEventArgs callbackQueryEventArgs){
 
       var callbackQuery = callbackQueryEventArgs.CallbackQuery;
@@ -41,13 +42,38 @@ namespace Awesome {
 
         if(callbackQuery.Data == "Circulacion"){
 
-          await DiaCirculacionAsync(callbackQuery);
+          DiaCirculacionAsync(callbackQuery);
 
         }else if(callbackQuery.Data == "AutoEvaluate"){
 
           CuestionarioSintomas(callbackQuery);
 
         }else if(callbackQuery.Data == "/help"){
+
+            await botClient.SendTextMessageAsync(
+              chatId: callbackQuery.Message.Chat.Id,
+              text: "Comandos:\n" + 
+                  "/start - ejecuta los comandos COVID 19\n"+
+                  "/circulacion - muestra los dias de circulación\n"+
+                  "/stats - muestra las estadisticas de COVID 19\n"+
+                  "/evaluate - muestra una serie de preguntas sobre los sintomas que padeces\n"+
+                  "/recomendaciones - muestra una serie de recomendaciones para prevenir el COVID 19\n"
+            );
+
+        }else if(callbackQuery.Data == "prevenir"){
+
+          await botClient.SendTextMessageAsync(
+            chatId: callbackQuery.Message.Chat.Id,
+            text: "Consejos para prevenir COVID-19\n"+
+                  "1. Utiliza constantemente alcohol en gel\n"+
+                  "2. Toma abundante agua y cuida tu alimentación para que mantengas tu sistema inmunologico fortalecido\n"+
+                  "3. Si tienes algún sintoma busca un medio y comunicate con tu supervisor\n"+
+                  "4. No saludes de mano o beso a las personas\n"+
+                  "5. Lávate las manos frecuentemente con agua y jabón\n"+
+                  "6. Limpia y desinfecta las superficies y objetos de uso común\n"+
+                  "7. Evita tocar tus ojos, nariz y boca sin haberte lavado las manos\n"+
+                  "8. Cubre tu nariz y boca con el antebrazo o con un pañuelo desechable al estornudar o toser"
+          );
 
         }
         else{
@@ -60,7 +86,8 @@ namespace Awesome {
         }
 
     }
-    static async Task DiaCirculacionAsync(CallbackQuery callbackQuery){
+
+    static async void DiaCirculacionAsync(CallbackQuery callbackQuery){
 
       await botClient.SendTextMessageAsync(
         chatId:callbackQuery.Message.Chat.Id,
@@ -68,64 +95,222 @@ namespace Awesome {
       );
 
     }
+
     static async void CuestionarioSintomas(CallbackQuery callbackQuery){
 
-      var rkm = new ReplyKeyboardMarkup();
+      var replyKeyboardMarkup = new ReplyKeyboardMarkup(
+        new KeyboardButton[][]{
+          new KeyboardButton[] { "Bien", "Mal" },
+        },
+        resizeKeyboard: true
+      );
 
-      rkm.Keyboard = new KeyboardButton[][]{
-        new KeyboardButton[]{
-          new KeyboardButton("Sí"),
-          new KeyboardButton("No")
-        }
-      };
+      await botClient.SendTextMessageAsync(
+        chatId: callbackQuery.Message.Chat.Id,
+        text: "¿Como te sientes hoy?",
+        replyMarkup: replyKeyboardMarkup
+      );
 
-      await botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, "Tienes fiebre?", replyMarkup: rkm);
-      await SegundaPregunta(callbackQuery);
-
-    }
-    static async Task SegundaPregunta(CallbackQuery callbackQuery){
-
-      var rkm = new ReplyKeyboardMarkup();
-
-      rkm.Keyboard = new KeyboardButton[][]{
-        new KeyboardButton[]{
-          new KeyboardButton("Sí"),
-          new KeyboardButton("No")
-        }
-      };
-
-      await botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, "Tienes tos seca?", replyMarkup: rkm);
-      await TerceraPregunta(callbackQuery);
-    }
-    static async Task TerceraPregunta(CallbackQuery callbackQuery){
-
-      var rkm = new ReplyKeyboardMarkup();
-
-      rkm.Keyboard = new KeyboardButton[][]{
-        new KeyboardButton[]{
-          new KeyboardButton("Sí"),
-          new KeyboardButton("No")
-        }
-      };
-
-      await botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, "Tienes cansancio?", replyMarkup: rkm);
-      await CuartaPregunta(callbackQuery);
+      SegundaPregunta(callbackQuery);
 
     }
-    static async Task CuartaPregunta(CallbackQuery callbackQuery){
 
-      var rkm = new ReplyKeyboardMarkup();
+    static async void SegundaPregunta(CallbackQuery callbackQuery){
 
-      rkm.Keyboard = new KeyboardButton[][]{
-        new KeyboardButton[]{
-          new KeyboardButton("Sí"),
-          new KeyboardButton("No")
-        }
-      };
+      var replyKeyboardMarkup = new ReplyKeyboardMarkup(
+        new KeyboardButton[][]{
+          new KeyboardButton[] { "Sí", "No" },
+        },
+        resizeKeyboard: true
+      );
 
-      await botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, "Tienes dolores y/o molestias?", replyMarkup: rkm);
-      
+      await botClient.SendTextMessageAsync(
+        chatId: callbackQuery.Message.Chat.Id,
+        text: "¿Has viajado en los ultimos 14 dias fuera del país/estado?",
+        replyMarkup: replyKeyboardMarkup
+      );
+      TerceraPregunta(callbackQuery);
     }
+
+    static async void TerceraPregunta(CallbackQuery callbackQuery){
+
+      var replyKeyboardMarkup = new ReplyKeyboardMarkup(
+        new KeyboardButton[][]{
+          new KeyboardButton[] { "Sí", "No" },
+        },
+        resizeKeyboard: true
+      );
+
+      await botClient.SendTextMessageAsync(
+        chatId: callbackQuery.Message.Chat.Id,
+        text: "¿Has tenido contacto directo con una persona diagnosticada con COVID-19?",
+        replyMarkup: replyKeyboardMarkup
+      );
+      CuartaPregunta(callbackQuery);
+    }
+
+    static async void CuartaPregunta(CallbackQuery callbackQuery){
+
+      var replyKeyboardMarkup = new ReplyKeyboardMarkup(
+        new KeyboardButton[][]{
+          new KeyboardButton[] { "Sí", "No" },
+        },
+        resizeKeyboard: true
+      );
+
+      await botClient.SendTextMessageAsync(
+        chatId: callbackQuery.Message.Chat.Id,
+        text: "¿Tienes fiebre mayor a 37.5 grados?",
+        replyMarkup: replyKeyboardMarkup
+      );
+      QuintaPregunta(callbackQuery);
+    }
+
+    static async void QuintaPregunta(CallbackQuery callbackQuery){
+
+      var replyKeyboardMarkup = new ReplyKeyboardMarkup(
+        new KeyboardButton[][]{
+          new KeyboardButton[] { "Sí", "No" },
+        },
+        resizeKeyboard: true
+      );
+
+      await botClient.SendTextMessageAsync(
+        chatId: callbackQuery.Message.Chat.Id,
+        text: "¿Te duele la garganta?",
+        replyMarkup: replyKeyboardMarkup
+      );
+      SextaPregunta(callbackQuery);
+    }
+
+    static async void SextaPregunta(CallbackQuery callbackQuery){
+
+      var replyKeyboardMarkup = new ReplyKeyboardMarkup(
+        new KeyboardButton[][]{
+          new KeyboardButton[] { "Sí", "No" },
+        },
+        resizeKeyboard: true
+      );
+
+      await botClient.SendTextMessageAsync(
+        chatId: callbackQuery.Message.Chat.Id,
+        text: "¿Tienes tos seca y persistente?",
+        replyMarkup: replyKeyboardMarkup
+      );
+      SeptimaPregunta(callbackQuery);
+    }
+
+    static async void SeptimaPregunta(CallbackQuery callbackQuery){
+
+      var replyKeyboardMarkup = new ReplyKeyboardMarkup(
+        new KeyboardButton[][]{
+          new KeyboardButton[] { "Sí", "No" },
+        },
+        resizeKeyboard: true
+      );
+
+      await botClient.SendTextMessageAsync(
+        chatId: callbackQuery.Message.Chat.Id,
+        text: "¿Te cuest trabajo respirar?",
+        replyMarkup: replyKeyboardMarkup
+      );
+      OctavaPregunta(callbackQuery);
+    }
+
+    static async void OctavaPregunta(CallbackQuery callbackQuery){
+
+      var replyKeyboardMarkup = new ReplyKeyboardMarkup(
+        new KeyboardButton[][]{
+          new KeyboardButton[] { "Sí", "No" },
+        },
+        resizeKeyboard: true
+      );
+
+      await botClient.SendTextMessageAsync(
+        chatId: callbackQuery.Message.Chat.Id,
+        text: "¿Tienes dolor muscular, de cabeza, y/o de articulaciones?",
+        replyMarkup: replyKeyboardMarkup
+      );
+      NovenaPregunta(callbackQuery);
+    }
+
+    static async void NovenaPregunta(CallbackQuery callbackQuery){
+
+      var replyKeyboardMarkup = new ReplyKeyboardMarkup(
+        new KeyboardButton[][]{
+          new KeyboardButton[] { "Sí", "No" },
+        },
+        resizeKeyboard: true
+      );
+
+      await botClient.SendTextMessageAsync(
+        chatId: callbackQuery.Message.Chat.Id,
+        text: "¿Tienes perdida de sentido del gusto u olfato?",
+        replyMarkup: replyKeyboardMarkup
+      );
+      DecimaPregunta(callbackQuery);
+    }
+
+    static async void DecimaPregunta(CallbackQuery callbackQuery){
+
+      var replyKeyboardMarkup = new ReplyKeyboardMarkup(
+        new KeyboardButton[][]{
+          new KeyboardButton[] { "Sí", "No" },
+        },
+        resizeKeyboard: true
+      );
+
+      await botClient.SendTextMessageAsync(
+        chatId: callbackQuery.Message.Chat.Id,
+        text: "¿Tienes diarrea, nausea o vomito?",
+        replyMarkup: replyKeyboardMarkup
+      );
+      OnceavaPregunta(callbackQuery);
+    }
+
+    static async void OnceavaPregunta(CallbackQuery callbackQuery){
+
+      var replyKeyboardMarkup = new ReplyKeyboardMarkup(
+        new KeyboardButton[][]{
+          new KeyboardButton[] { "Sí", "No" },
+        },
+        resizeKeyboard: true
+      );
+
+      await botClient.SendTextMessageAsync(
+        chatId: callbackQuery.Message.Chat.Id,
+        text: "¿Te has hecho la prueba de COVID-19 \n (PCR, IgG, IgM)?",
+        replyMarkup: replyKeyboardMarkup
+      );
+      DoceavaPregunta(callbackQuery);
+    }
+
+    static async void DoceavaPregunta(CallbackQuery callbackQuery){
+
+      var replyKeyboardMarkup = new ReplyKeyboardMarkup(
+        new KeyboardButton[][]{
+          new KeyboardButton[] { "Sí", "No" },
+        },
+        resizeKeyboard: true
+      );
+
+      await botClient.SendTextMessageAsync(
+        chatId: callbackQuery.Message.Chat.Id,
+        text: "¿Usted se encuentra en alguna de las siguientes condiciones?\n"+
+              "* Mayor a 60 años\n"+
+              "* Enfermedades cardiovasculares\n"+
+              "* Hipertensión arterial\n"+
+              "* Diabetes\n"+
+              "* Enfermedades respiratorias (pulmonar, cronica, asma)\n"+
+              "* Insuficiencia renal cronica\n"+
+              "* Cancer\n"+
+              "* Obesidad\n"+
+              "* Enfermedad o tratamiento immunosupresor",
+        replyMarkup: replyKeyboardMarkup
+      );
+
+    }
+
     static async void Bot_OnMessage(object sender, MessageEventArgs e) {
       if (e.Message.Text != null){
         
@@ -146,31 +331,18 @@ namespace Awesome {
                 InlineKeyboardButton.WithUrl(             //Columna nueva
                   text:"Estadísticas",
                   url: "https://www.google.com/search?q=coronavirus+statistics&oq=coronavirus+st&aqs=chrome.0.0i67j69i57j0l6.6211j0j4&sourceid=chrome&ie=UTF-8"),
-                InlineKeyboardButton.WithUrl(
-                  text:"Como prevenir?",
-                  url:"https://www.who.int/es/emergencies/diseases/novel-coronavirus-2019/advice-for-public")
+                InlineKeyboardButton.WithCallbackData(
+                  text:"Como prevenir el COVID-19?",
+                  callbackData: "prevenir")
               },
               new[]{
                 InlineKeyboardButton.WithCallbackData(
-                  text:"Help",
+                  text:"Que puedo hacer?",
                   callbackData:"/help")
               }
           });
 
             await botClient.SendTextMessageAsync(e.Message.Chat.Id,"Bienvenid@ al BOT COVID19HN \n Selecciona el comando a ejecutar",replyMarkup: BotonesHYD);
-        }
-
-        if(e.Message.Text == "/usage" || e.Message.Text == "/help" || e.Message.Text == "/"){
-
-          await botClient.SendTextMessageAsync(
-            chatId: e.Message.Chat,
-            text: "Comandos:\n" + 
-                  "/start - ejecuta los comandos COVID 19\n"+
-                  "/circulacion - muestra los dias de circulación\n"+
-                  "/stats - muestra las estadisticas de COVID 19\n"+
-                  "/evaluate - muestra una serie de preguntas sobre los sintomas que padeces\n"+
-                  "/recomendaciones - muestra una serie de recomendaciones para prevenir el COVID 19\n"
-          );
         }
 
       }
