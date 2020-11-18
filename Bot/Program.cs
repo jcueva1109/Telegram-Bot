@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
@@ -14,6 +12,7 @@ namespace Awesome
         static void Main()
         {
 
+            //Token del bot de la clase: 1405453733:AAHu9DKWnQCIymcrRKwiObzwrdbFfNDl0do
             botClient = new TelegramBotClient("1073045363:AAGj36rMsGOP_DfyxMUC-ihNeEjCaA_ra3M");
 
             var me = botClient.GetMeAsync().Result;
@@ -32,6 +31,7 @@ namespace Awesome
 
             botClient.StopReceiving();
         }
+        
         static void BotOnReceiveError(object sender, ReceiveErrorEventArgs e)
         {
             Console.WriteLine($"botClient>> Error recibido: " + e.ApiRequestException.Message);
@@ -96,7 +96,7 @@ namespace Awesome
                 );
 
             }
-          
+
         }
 
         static async void DiaCirculacionAsync(CallbackQuery callbackQuery)
@@ -396,16 +396,16 @@ namespace Awesome
                 {
 
                     var BotonesHYD = new InlineKeyboardMarkup(new[]{
-              new []{   //Fila nueva
-                InlineKeyboardButton.WithCallbackData(    //Columna nueva
+              new []{
+                InlineKeyboardButton.WithCallbackData(
                   text:"Días de Circulación",
                   callbackData: "Circulacion"),
-                  InlineKeyboardButton.WithCallbackData(    //Columna nueva
+                  InlineKeyboardButton.WithCallbackData(
                     text:"Auto Evaluate",
                     callbackData: "AutoEvaluate")
               },
-              new []{   //Fila nueva
-                InlineKeyboardButton.WithUrl(             //Columna nueva
+              new []{
+                InlineKeyboardButton.WithUrl(
                   text:"Estadísticas",
                   url: "https://www.google.com/search?q=coronavirus+statistics&oq=coronavirus+st&aqs=chrome.0.0i67j69i57j0l6.6211j0j4&sourceid=chrome&ie=UTF-8"),
                 InlineKeyboardButton.WithCallbackData(
@@ -419,7 +419,8 @@ namespace Awesome
               }
           });
 
-                    await botClient.SendTextMessageAsync(e.Message.Chat.Id, "Bienvenid@ al BOT COVID19HN \n Selecciona el comando a ejecutar", replyMarkup: BotonesHYD);
+                    //await botClient.SendTextMessageAsync(e.Message.Chat.Id, "Bienvenid@ al BOT COVID19HN \n Selecciona el comando a ejecutar", replyMarkup: BotonesHYD);
+                    await botClient.SendTextMessageAsync(e.Message.Chat.Id, "My message \U0001F601", replyMarkup: BotonesHYD);
                 }
 
             }
