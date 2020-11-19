@@ -9,6 +9,8 @@ namespace Awesome
     class Program
     {
         static ITelegramBotClient botClient;
+        static double contadorSI = 0;
+        static double contadorNO = 0;
         static void Main()
         {
 
@@ -42,8 +44,9 @@ namespace Awesome
 
             var callbackQuery = callbackQueryEventArgs.CallbackQuery;
 
-            Console.WriteLine($"botCliente>> El usuario selecciono {callbackQuery.Data}");
+            Console.WriteLine($"botClient:>> @{callbackQuery.Message.Chat.Username} seleccionó {callbackQuery.Data}");
 
+            //CONDICIONALES DEL MENU INICIAL
             if (callbackQuery.Data == "Circulacion")
             {
 
@@ -53,7 +56,7 @@ namespace Awesome
             else if (callbackQuery.Data == "AutoEvaluate")
             {
 
-                CuestionarioSintomas(callbackQuery);
+              CuestionarioSintomas(callbackQuery);
 
             }
             else if (callbackQuery.Data == "/help")
@@ -92,10 +95,100 @@ namespace Awesome
 
                 await botClient.AnswerCallbackQueryAsync(
                   callbackQueryId: callbackQuery.Id,
-                  text: $"..."
+                  text: ""
                 );
 
             }
+
+              //PERDON INGE POR SER LA VERGA HACIENDO CODIGO!! FIJO ESTA MIERDA NO ES MANTENIBLE
+              if(callbackQuery.Data == "si1"){
+                contadorSI++;
+              }else if(callbackQuery.Data == "si2"){
+                contadorSI++;
+              }else if(callbackQuery.Data == "si3"){
+                contadorSI++;
+              }else if(callbackQuery.Data == "si4"){
+                contadorSI++;
+              }else if(callbackQuery.Data == "si5"){
+                contadorSI++;
+              }else if(callbackQuery.Data == "si6"){
+                contadorSI++;
+              }else if(callbackQuery.Data == "si7"){
+                contadorSI++;
+              }else if(callbackQuery.Data == "si8"){
+                contadorSI++;
+              }else if(callbackQuery.Data == "si9"){
+                contadorSI++;
+              }else if(callbackQuery.Data == "si10"){
+                contadorSI++;
+              }else if(callbackQuery.Data == "si11"){
+                contadorSI++;
+              }
+
+              if(callbackQuery.Data == "no1"){
+                contadorNO++;
+              }else if(callbackQuery.Data == "no2"){
+                contadorNO++;
+              }else if(callbackQuery.Data == "no3"){
+                contadorNO++;
+              }else if(callbackQuery.Data == "no4"){
+                contadorNO++;
+              }else if(callbackQuery.Data == "no5"){
+                contadorNO++;
+              }else if(callbackQuery.Data == "no6"){
+                contadorNO++;
+              }else if(callbackQuery.Data == "no7"){
+                contadorNO++;
+              }else if(callbackQuery.Data == "no8"){
+                contadorNO++;
+              }else if(callbackQuery.Data == "no9"){
+                contadorNO++;
+              }else if(callbackQuery.Data == "no10"){
+                contadorNO++;
+              }else if(callbackQuery.Data == "no11"){
+                contadorNO++;
+              }
+
+              // CONDIICONALES DEL DOCTOR COVID
+              if(callbackQuery.Data == "bien" || callbackQuery.Data == "mal"){
+                SegundaPregunta(callbackQuery);
+              }else if(callbackQuery.Data == "si1" || callbackQuery.Data == "no1"){
+
+                TerceraPregunta(callbackQuery);
+              }else if(callbackQuery.Data == "si2" || callbackQuery.Data == "no2"){
+
+                CuartaPregunta(callbackQuery);
+              }else if(callbackQuery.Data == "si3" || callbackQuery.Data == "no3"){
+
+                QuintaPregunta(callbackQuery);
+              }else if(callbackQuery.Data == "si4" || callbackQuery.Data == "no4"){
+
+                SextaPregunta(callbackQuery);
+              }else if(callbackQuery.Data == "si5" || callbackQuery.Data == "no5"){
+
+                SeptimaPregunta(callbackQuery);
+              }else if(callbackQuery.Data == "si6" || callbackQuery.Data == "no6"){
+
+                OctavaPregunta(callbackQuery);
+              }else if(callbackQuery.Data == "si7" || callbackQuery.Data == "no7"){
+
+                NovenaPregunta(callbackQuery);
+              }else if(callbackQuery.Data == "si8" || callbackQuery.Data == "no8"){
+
+                DecimaPregunta(callbackQuery);
+              }else if(callbackQuery.Data == "si9" || callbackQuery.Data == "no9"){
+
+                OnceavaPregunta(callbackQuery);
+              }else if(callbackQuery.Data == "si10" || callbackQuery.Data == "no10"){
+
+                DoceavaPregunta(callbackQuery);
+              }else if(callbackQuery.Data == "si11" || callbackQuery.Data == "no11"){
+
+                calcularRiesgo(callbackQuery);
+                contadorSI = 0;
+                contadorNO = 0;
+
+              }
 
         }
 
@@ -129,8 +222,6 @@ namespace Awesome
       });
 
             await botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, "¿Como te sientes hoy?", replyMarkup: respuestas);
-            SegundaPregunta(callbackQuery);
-
         }
 
         static async void SegundaPregunta(CallbackQuery callbackQuery)
@@ -141,11 +232,11 @@ namespace Awesome
        new[]{
          InlineKeyboardButton.WithCallbackData(
            text: "Sí",
-           callbackData: "si"
+           callbackData: "si1"
          ),
          InlineKeyboardButton.WithCallbackData(
             text: "No",
-            callbackData: "no"
+            callbackData: "no1"
          )
 
        }
@@ -153,7 +244,7 @@ namespace Awesome
      });
 
             await botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, "¿Has viajado en los ultimos 14 dias fuera del país/estado?", replyMarkup: respuestas);
-            TerceraPregunta(callbackQuery);
+            //TerceraPregunta(callbackQuery);
         }
 
         static async void TerceraPregunta(CallbackQuery callbackQuery)
@@ -164,18 +255,18 @@ namespace Awesome
        new[]{
          InlineKeyboardButton.WithCallbackData(
            text: "Sí",
-           callbackData: "si"
+           callbackData: "si2"
          ),
          InlineKeyboardButton.WithCallbackData(
             text: "No",
-            callbackData: "no"
+            callbackData: "no2"
          )
        }
 
       });
 
             await botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, "¿Has tenido contacto directo con una persona diagnosticada con COVID-19?", replyMarkup: respuestas);
-            CuartaPregunta(callbackQuery);
+            //CuartaPregunta(callbackQuery);
         }
 
         static async void CuartaPregunta(CallbackQuery callbackQuery)
@@ -186,18 +277,18 @@ namespace Awesome
        new[]{
          InlineKeyboardButton.WithCallbackData(
            text: "Sí",
-           callbackData: "si"
+           callbackData: "si3"
          ),
          InlineKeyboardButton.WithCallbackData(
             text: "No",
-            callbackData: "no"
+            callbackData: "no3"
          )
        }
 
       });
 
             await botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, "¿Tienes fiebre mayor a 37.5 grados?", replyMarkup: respuestas);
-            QuintaPregunta(callbackQuery);
+            //QuintaPregunta(callbackQuery);
         }
 
         static async void QuintaPregunta(CallbackQuery callbackQuery)
@@ -208,18 +299,18 @@ namespace Awesome
        new[]{
          InlineKeyboardButton.WithCallbackData(
            text: "Sí",
-           callbackData: "si"
+           callbackData: "si4"
          ),
          InlineKeyboardButton.WithCallbackData(
             text: "No",
-            callbackData: "no"
+            callbackData: "no4"
          )
        }
 
       });
 
             await botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, "¿Te duele la garganta?", replyMarkup: respuestas);
-            SextaPregunta(callbackQuery);
+            //SextaPregunta(callbackQuery);
         }
 
         static async void SextaPregunta(CallbackQuery callbackQuery)
@@ -230,18 +321,18 @@ namespace Awesome
        new[]{
          InlineKeyboardButton.WithCallbackData(
            text: "Sí",
-           callbackData: "si"
+           callbackData: "si5"
          ),
          InlineKeyboardButton.WithCallbackData(
             text: "No",
-            callbackData: "no"
+            callbackData: "no5"
          )
        }
 
       });
 
             await botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, "¿Tienes tos seca y persistente?", replyMarkup: respuestas);
-            SeptimaPregunta(callbackQuery);
+            //SeptimaPregunta(callbackQuery);
         }
 
         static async void SeptimaPregunta(CallbackQuery callbackQuery)
@@ -252,18 +343,18 @@ namespace Awesome
        new[]{
          InlineKeyboardButton.WithCallbackData(
            text: "Sí",
-           callbackData: "si"
+           callbackData: "si6"
          ),
          InlineKeyboardButton.WithCallbackData(
             text: "No",
-            callbackData: "no"
+            callbackData: "no6"
          )
        }
 
       });
 
             await botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, "¿Te cuest trabajo respirar?", replyMarkup: respuestas);
-            OctavaPregunta(callbackQuery);
+            //OctavaPregunta(callbackQuery);
         }
 
         static async void OctavaPregunta(CallbackQuery callbackQuery)
@@ -274,18 +365,18 @@ namespace Awesome
        new[]{
          InlineKeyboardButton.WithCallbackData(
            text: "Sí",
-           callbackData: "si"
+           callbackData: "si7"
          ),
          InlineKeyboardButton.WithCallbackData(
             text: "No",
-            callbackData: "no"
+            callbackData: "no7"
          )
        }
 
       });
 
             await botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, "¿Tienes dolor muscular, de cabeza, y/o de articulaciones?", replyMarkup: respuestas);
-            NovenaPregunta(callbackQuery);
+            //NovenaPregunta(callbackQuery);
         }
 
         static async void NovenaPregunta(CallbackQuery callbackQuery)
@@ -296,18 +387,18 @@ namespace Awesome
        new[]{
          InlineKeyboardButton.WithCallbackData(
            text: "Sí",
-           callbackData: "si"
+           callbackData: "si8"
          ),
          InlineKeyboardButton.WithCallbackData(
             text: "No",
-            callbackData: "no"
+            callbackData: "no8"
          )
        }
 
       });
 
             await botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, "¿Tienes perdida de sentido del gusto u olfato?", replyMarkup: respuestas);
-            DecimaPregunta(callbackQuery);
+            //DecimaPregunta(callbackQuery);
         }
 
         static async void DecimaPregunta(CallbackQuery callbackQuery)
@@ -318,18 +409,18 @@ namespace Awesome
        new[]{
          InlineKeyboardButton.WithCallbackData(
            text: "Sí",
-           callbackData: "si"
+           callbackData: "si9"
          ),
          InlineKeyboardButton.WithCallbackData(
             text: "No",
-            callbackData: "no"
+            callbackData: "no9"
          )
        }
 
       });
 
             await botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, "¿Tienes diarrea, nausea o vomito?", replyMarkup: respuestas);
-            OnceavaPregunta(callbackQuery);
+            //OnceavaPregunta(callbackQuery);
         }
 
         static async void OnceavaPregunta(CallbackQuery callbackQuery)
@@ -340,18 +431,18 @@ namespace Awesome
        new[]{
          InlineKeyboardButton.WithCallbackData(
            text: "Sí",
-           callbackData: "si"
+           callbackData: "si10"
          ),
          InlineKeyboardButton.WithCallbackData(
             text: "No",
-            callbackData: "no"
+            callbackData: "no10"
          )
        }
 
       });
 
             await botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, "¿Te has hecho la prueba de COVID-19 \n (PCR, IgG, IgM)?", replyMarkup: respuestas);
-            DoceavaPregunta(callbackQuery);
+            //DoceavaPregunta(callbackQuery);
         }
 
         static async void DoceavaPregunta(CallbackQuery callbackQuery)
@@ -362,11 +453,11 @@ namespace Awesome
        new[]{
          InlineKeyboardButton.WithCallbackData(
            text: "Sí",
-           callbackData: "si"
+           callbackData: "si11"
          ),
          InlineKeyboardButton.WithCallbackData(
             text: "No",
-            callbackData: "no"
+            callbackData: "no11"
          )
        }
 
@@ -381,8 +472,8 @@ namespace Awesome
                     "* Insuficiencia renal cronica\n" +
                     "* Cancer\n" +
                     "* Obesidad\n" +
-                    "* Enfermedad o tratamiento immunosupresor", replyMarkup: respuestas);
-
+                    "* Enfermedad o tratamiento immunosupresor", replyMarkup: respuestas
+            );
         }
 
         static async void Bot_OnMessage(object sender, MessageEventArgs e)
@@ -390,7 +481,7 @@ namespace Awesome
             if (e.Message.Text != null)
             {
 
-                Console.WriteLine($"botClient>> Received a text message from @{e.Message.Chat.Username}:" + e.Message.Text);
+                Console.WriteLine($"botClient:>> Received a text message from @{e.Message.Chat.Username}:" + e.Message.Text);
 
                 if (e.Message.Text == "/start")
                 {
@@ -398,32 +489,76 @@ namespace Awesome
                     var BotonesHYD = new InlineKeyboardMarkup(new[]{
               new []{
                 InlineKeyboardButton.WithCallbackData(
-                  text:"Días de Circulación",
+                  text:"Días de Circulación HN\U0001F699",
                   callbackData: "Circulacion"),
                   InlineKeyboardButton.WithCallbackData(
-                    text:"Auto Evaluate",
+                    text:"Doctor COVID-19 \U0001F9D1",
                     callbackData: "AutoEvaluate")
               },
               new []{
                 InlineKeyboardButton.WithUrl(
-                  text:"Estadísticas",
+                  text:"Estadísticas \U0001F4C8",
                   url: "https://www.google.com/search?q=coronavirus+statistics&oq=coronavirus+st&aqs=chrome.0.0i67j69i57j0l6.6211j0j4&sourceid=chrome&ie=UTF-8"),
                 InlineKeyboardButton.WithCallbackData(
-                  text:"Prevenir COVID-19",
+                  text:"Prevenir COVID-19\U0001F637",
                   callbackData: "prevenir")
               },
               new[]{
                 InlineKeyboardButton.WithCallbackData(
-                  text:"Que puedo hacer?",
+                  text:"Ayuda \U0001F6A8",
                   callbackData:"/help")
               }
           });
 
-                    //await botClient.SendTextMessageAsync(e.Message.Chat.Id, "Bienvenid@ al BOT COVID19HN \n Selecciona el comando a ejecutar", replyMarkup: BotonesHYD);
-                    await botClient.SendTextMessageAsync(e.Message.Chat.Id, "My message \U0001F601", replyMarkup: BotonesHYD);
+                    await botClient.SendPhotoAsync(
+                      chatId: e.Message.Chat,
+                      photo: "https://image.freepik.com/vector-gratis/coronavirus-covid-19-luchadores-02_126288-23.jpg",
+                      caption: ""
+                    );
+                    await botClient.SendTextMessageAsync(e.Message.Chat.Id, "Bienvenid@ al BOT COVID19HN \n Selecciona el comando a ejecutar", replyMarkup: BotonesHYD);
                 }
 
             }
+        }
+
+        static async void calcularRiesgo(CallbackQuery callbackQuery){
+
+            double positivo = (contadorSI / 12) * 100;
+            positivo = Math.Round(positivo, 2);
+            double negativo = (contadorNO / 12) * 100;
+            negativo = Math.Round(negativo, 2);
+
+            // Console.WriteLine($"Cantidad de si {contadorSI}");
+            // Console.WriteLine($"Cantidad de no {contadorNO}");
+            // Console.WriteLine($"Cantidad de positivo {positivo}");
+            // Console.WriteLine($"Cantidad de negativo {negativo}");
+
+          //Ponderacion del test
+            if(positivo >= negativo){
+
+              Console.WriteLine($"Cantidad de positivo: {positivo}");
+
+              await botClient.SendPhotoAsync(
+                chatId:  callbackQuery.Message.Chat,
+                photo: "https://hhp-blog.s3.amazonaws.com/2020/08/GettyImages-1216575896.jpg",
+                caption: $"Tienes un {positivo}% de probabilidad que estes contagiado. Por favor atiende a tu medico mas cercano."
+              );
+
+            }else{
+
+              Console.WriteLine($"Cantidad de negativo: {negativo}");
+
+              await botClient.SendPhotoAsync(
+                chatId:  callbackQuery.Message.Chat,
+                photo: "https://e00-expansion.uecdn.es/assets/multimedia/imagenes/2020/06/15/15922327273752.jpg",
+                caption: $"Tienes un {negativo}% de que no estes contagiado. Sigue cuidandote!"
+              );
+
+            }
+
+          contadorNO = 0;
+          contadorSI = 0;
+
         }
 
     }
